@@ -21,7 +21,6 @@
 # USA.
 
 use Irssi;
-use URI::Escape;
 my @list;
 sub sub_priv {
 	my ($server, $data, $nick, $address) = @_;
@@ -57,6 +56,24 @@ sub go_to {
 		open(COMMAND, "xdg-open $link 2>&1 >/dev/null |");
 	}
 }
+sub clear_list {
+	undef @list;
+}
+sub rm_link {
+	my ($ind) = @_;
+	my $link = $list[$#list-$ind];
+	if (defined $link){
+		delete $list[$#list-$ind];
+	}
+	else {
+		Irssi::print("No link specified");
+	}
+}
+
+# TODO add help information in the irssi way
+
 Irssi::signal_add("event privmsg", 'sub_priv');
 Irssi::command_bind('linklist', 'print_list');
 Irssi::command_bind('openlink', 'go_to');
+Irssi::command_bind('clearlink', 'clear_list');
+Irssi::command_bind('rmlink', 'rm_link');
