@@ -63,7 +63,8 @@ sub rm_link {
 	my ($ind) = @_;
 	my $link = $list[$#list-$ind];
 	if (defined $link){
-		delete $list[$#list-$ind];
+		#splice(@links, $ind, 1);
+		undef $list[$#list-$ind];
 	}
 	else {
 		Irssi::print("No link specified");
