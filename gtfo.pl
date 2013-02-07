@@ -54,23 +54,16 @@ sub kick_fail(){
 sub kick_user (){
 	my ($server, $data) = @_;
 	my ($nick, $user, $host) = ( split / +/, $data, 6)[1,2,3];
-	$server->command("MODE +b *!*@" . $host);    # send command
-	$server->command("KICK $nick message");    # send kick command
-	#if ($host =~ /((?:[0-9]{1,3}\.){3}[0-9]{1,3})/){
-		#$server->command("MODE +b *!*@ $1");    # send command
-		#$server->command("KICK $name message");    # send kick command
-		#	Irssi::print("ip = $1");
-		#}
-		#else{
-		#Irssi::print("No IP match : $host");
-		#}
+	my $channel = Irssi::active_win()->get_active_name();
+	Irssi::print("Kicking $host from $channel");
+	#$server->command("MODE $channel +b *!*@" . $host);    # send command
+	$server->command("KICK $channel $nick message");    # send kick command
 }
 
 
 
 sub gtfo() {
-	my ($name) = @_;
-	my $server = Irssi::active_server();
+	my ($name,$server,$witem) = @_;
 
 	if (!$server || !$server->{connected}){
 		Irssi::print("Not connected to server");
