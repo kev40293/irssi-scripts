@@ -8,16 +8,13 @@ use strict;
 use warnings;
 use Irssi;
 
-my @watched;
+my @channels;
 my @people;
-# Just some seed channels for now
-push @watched, "#iit-acm";
-push @people, "ChrisLAS";
 
 sub add_channel {
    my ($chan) = @_;
    if ($chan =~ m/:?(#\w+)/){
-      push @watched, $chan;
+      push @channels, $chan;
    }
    elsif ($chan =~ m/\w*/){
       push @people, $1;
@@ -26,27 +23,43 @@ sub add_channel {
 }
 
 sub list_watched {
-   foreach (@watched) {
+   foreach (@channels) {
+      Irssi::print $_;
+   }
+   foreach (@people) {
       Irssi::print $_;
    }
 }
 
 sub rem_channel {
-   my @ind = grep { $watched[$_] eq $_[0] } 0..$#watched;
+   my @ind = grep { $channels[$_] eq $_[0] } 0..$#channels;
    foreach (@ind) {
-      splice (@watched, $_, 1);
+      splice (@channels, $_, 1);
+   }
+   @ind = grep { $people[$_] eq $_[0] } 0..$#people;
+   foreach (@ind) {
+      splice (@people, $_, 1);
    }
 }
 
 sub notify_join {
    my ($server, $channel, $nick, $address) = @_;
    $channel =~ s/:?(#\w+)/$1/;
-   if ( grep(/$channel/, @watched) or grep(/$nick/, @people) )  {
-      open(COMMAND, "e-notify-send $channel $nick >/dev/null |");
+   if ( grep(/$channel/, @channels) or grep(/$nick/, @people) )  {
+      open(COMMAND, "e-notify-send join \"$channel $nick\" >/dev/null |");
    }
 }
 
+sub notify_leave {
+   my ($server, $channel, $nick) = @_;
+   if ( grep(/$channel/, @channels) or grep(/$nick/, @people) )  {
+      open(COMMAND, "e-notify-send quit \"$channel $nick\" >/dev/null |");
+   }
+}
+
+
 Irssi::signal_add("event join", 'notify_join');
-Irssi::command_bind('watch', 'add_channel');
+Irssi::signal_add("event part", 'notify_leave');
+Irssi::command_bind('watchfor', 'add_channel');
 Irssi::command_bind('unwatch', 'rem_channel');
-Irssi::command_bind('watched', 'list_watched');
+Irssi::command_bind('watching', 'list_watched');
