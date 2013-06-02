@@ -21,6 +21,9 @@
 # USA.
 
 use Irssi;
+use strict;
+use warnings;
+
 my @list;
 sub sub_priv {
 	my ($server, $data, $nick, $address) = @_;
