@@ -48,12 +48,12 @@ sub print_list {
 sub go_to {
 	my ($ind) = @_;
 	my $link;
-	if ($ind <= $#list){
+   if (not defined $ind) {
+		$link = $list[0];
+   }
+   elsif ($ind <= $#list){
 		$link = $list[$#list-$ind];
 	}	
-	else {
-		$link = $list[0];
-	}
 
 	if ($link ne ""){
 		open(COMMAND, "xdg-open $link 2>&1 >/dev/null |");
