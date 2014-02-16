@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 #
-# Plugin to Irssi to allow commands to keep track of links posted in
-# the channels and also to open links in an external browser
+# Plugin to Irssi to to fascilitate kicking and banning users
 #
 # Copyright (C) 2013  Kevin "icarus" Brandstatter, "nogal"
 #
